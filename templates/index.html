@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo - AI Chatbot</title>
+    
+    <!-- ✅ Load Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #181818;
+            --chat-bg: #222;
+            --text-color: #f1f1f1;
+            --accent-color: #3a3a3c;
+            --user-msg: #505050;
+            --bot-msg: #2e2e2e;
+            --btn-color: #777;
+            --btn-hover: #999;
+            --border-radius: 10px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .chat-container {
+            width: 420px;
+            background: var(--chat-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chat-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .chat-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--btn-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .chat-box {
+            width: 100%;
+            height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            background: var(--accent-color);
+            border-radius: var(--border-radius);
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: var(--border-radius);
+            max-width: 80%;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .user-message {
+            background-color: var(--user-msg);
+            color: #fff;
+            align-self: flex-end;
+            border-radius: var(--border-radius) var(--border-radius) 0px var(--border-radius);
+        }
+
+        .bot-message {
+            background-color: var(--bot-msg);
+            color: var(--text-color);
+            align-self: flex-start;
+            border-radius: var(--border-radius) var(--border-radius) var(--border-radius) 0px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--btn-color);
+            border-radius: var(--border-radius);
+            background: transparent;
+            color: var(--text-color);
+            margin-top: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            background: var(--btn-color);
+            border: none;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: var(--btn-hover);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-avatar">T</div>
+        <div class="chat-header">Theo - AI Assistant</div>
+        <div id="chat" class="chat-box"></div>
+        <input type="text" id="userInput" placeholder="Ask Theo anything...">
+        <div class="button-container">
+            <button onclick="sendMessage()">Send</button>
+            <button onclick="startVoiceRecognition()">🎤 Speak</button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("userInput").value.trim();
+            if (userInput === "") return;
+
+            var chatBox = document.getElementById("chat");
+            chatBox.innerHTML += `<div class="message user-message">${userInput}</div>`;
+            document.getElementById("userInput").value = "";
+            
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ "message": userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML += `<div class="message bot-message">${data.response}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
+
+        function startVoiceRecognition() {
+            var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = "en-US";
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                document.getElementById("userInput").value = event.results[0][0].transcript;
+                sendMessage();
+            };
+        }
+    </script>
+</body>
+</html>

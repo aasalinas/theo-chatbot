@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo - Login</title>
+    
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --form-bg: #111;
+            --text-color: #ffffff;
+            --border-color: #0aff9d;
+            --btn-color: #0aff9d;
+            --btn-hover: #0ecc7e;
+        }
+
+        .light-mode {
+            --bg-color: #ffffff;
+            --form-bg: #f1f1f1;
+            --text-color: #000000;
+            --border-color: #333;
+            --btn-color: #006400;
+            --btn-hover: #008000;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: 0.3s;
+        }
+
+        .form-container {
+            background: var(--form-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0px 5px 20px rgba(0, 255, 157, 0.3);
+            text-align: center;
+            width: 300px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-color);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: var(--btn-color);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: var(--btn-hover);
+            transform: scale(1.05);
+        }
+
+        a {
+            color: var(--btn-color);
+            text-decoration: none;
+        }
+    </style>
+
+    <script>
+        function toggleMode() {
+            document.body.classList.toggle("light-mode");
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Login to Theo</h2>
+        <form method="POST" action="/login">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="/register">Register here</a></p>
+        <button onclick="toggleMode()">🌙 Toggle Dark/Light Mode</button>
+    </div>
+</body>
+</html>
